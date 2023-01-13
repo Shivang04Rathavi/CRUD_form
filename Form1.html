@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Registration Form</title>
+<style>
+body {
+    padding: 10px 50px;
+}
+
+.formdesign {
+    font-size: 20px;
+
+}
+
+table{
+    border-collapse: collapse;
+}
+table.list{
+    width:100%;
+}
+
+td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+tr:nth-child(even),table.list thead>tr {
+    background-color: #dddddd;
+}
+
+.formdesign input {
+    width: 50%;
+    padding: 12px 20px;
+    border: 1px solid blue;
+    margin: 14px;
+    border-radius: 4px;
+    font-size: 15px;
+}
+
+.formerror {
+    color: red;
+}
+
+input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* The ::-webkit-outer-spin-button CSS pseudo-element is used to style the outer part of the spinner
+         button of number picker <input> elements. */
+         /* The ::-webkit-inner-spin-button CSS pseudo-element is used to style the inner part of the 
+         spinner button of number picker input elements. */
+
+.but {
+    border-radius: 9px;
+    width: 100px;
+    height: 50px;
+    font-size: 25px;
+    margin: 22px 20px;
+}</style>
+</head>
+
+<body>
+    <h1>Registration Form</h1>
+    <form  name="myForm"  >
+        <div class="formdesign" id="name">
+            Name: <input type="text" name="fname" id="fname" required><b><span class="formerror"> </span></b>
+        </div>
+
+        <div class="formdesign" id="email">
+            Email: <input type="email" name="femail" id="femail" required><b><span class="formerror"> </span></b>
+        </div>
+
+        <div class="formdesign" id="phone">
+            Phone: <input type="number" name="fphone" size="10" id="fphone" required><b><span class="formerror"></span></b>
+        </div>
+
+        <div class="formdesign" id="pass">
+            Password: <input type="password" name="fpass" id="fpass" required><b><span class="formerror"></span></b>
+        </div>
+
+        <div class="formdesign" id="cpass">
+            Confirm Password: <input type="password" name="fcpass" id="fcpass" required><b><span class="formerror"></span></b>
+        </div>
+
+        <input class="but" type="submit" value="Submit" onclick="event.preventDefault();onFormSubmit()">
+
+    </form>
+        <table class="list" id="usdata">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Password</th>
+                    <th>Confirm Password</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+
+        <script>
+            var selectedRow = null
+            function onFormSubmit() {
+                debugger
+                if (validateForm()) {
+                    var formData = readFormData();
+                    if (selectedRow == null)
+                        insertNewRecord(formData);
+                    else
+                        updateRecord(formData);
+                    resetForm();
+                    }
+            }
+            
+
+            function readFormData() {
+                debugger
+                var formData = {};
+                formData["fname"] = document.getElementById("fname").value;
+                formData["femail"] = document.getElementById("femail").value;
+                formData["fphone"] = document.getElementById("fphone").value;
+                formData["fpass"] = document.getElementById("fpass").value;
+                formData["fcpass"] = document.getElementById("fcpass").value;
+                return formData;
+            }
+
+            function insertNewRecord(data) {
+                debugger
+                var table = document.getElementById("usdata").getElementsByTagName('tbody')[0];
+                var newRow = table.insertRow(table.length);
+                cell1 = newRow.insertCell(0);
+                cell1.innerHTML = data.fname;
+                cell2 = newRow.insertCell(1);
+                cell2.innerHTML = data.femail;
+                cell3 = newRow.insertCell(2);
+                cell3.innerHTML = data.fphone;
+                cell4 = newRow.insertCell(3);
+                cell4.innerHTML = data.fpass;
+                cell5 = newRow.insertCell(4);
+                cell5.innerHTML = data.fcpass;
+                cell6 = newRow.insertCell(5);
+                cell6.innerHTML = `<a onClick="onEdit(this)">Edit</a> <br/>
+                                <a onClick="onDelete(this)">Delete</a>`;
+            }
+
+            function resetForm() {
+                debugger
+                document.getElementById("fname").value = "";
+                document.getElementById("femail").value = "";
+                document.getElementById("fphone").value = "";
+                document.getElementById("fpass").value = "";
+                document.getElementById("fcpass").value = "";
+                selectedRow = null;
+            }
+
+            function onEdit(td) {
+                debugger
+                selectedRow = td.parentElement.parentElement;
+                document.getElementById("fname").value = selectedRow.cells[0].innerHTML;
+                document.getElementById("femail").value = selectedRow.cells[1].innerHTML;
+                document.getElementById("fphone").value = selectedRow.cells[2].innerHTML;
+                document.getElementById("fpass").value = selectedRow.cells[3].innerHTML;
+                document.getElementById("fcpass").value = selectedRow.cells[4].innerHTML;
+            }
+
+            function updateRecord(formData) {
+                debugger
+                selectedRow.cells[0].innerHTML = formData.fname;
+                selectedRow.cells[1].innerHTML = formData.femail;
+                selectedRow.cells[2].innerHTML = formData.fphone;
+                selectedRow.cells[3].innerHTML = formData.fpass;
+                selectedRow.cells[4].innerHTML = formData.fcpass;
+            }
+
+            function onDelete(td) {
+                debugger
+                if (confirm('Are you sure to delete this record ?')) {
+                    row = td.parentElement.parentElement;
+                    document.getElementById("usdata").deleteRow(row.rowIndex);
+                    resetForm();
+                }
+            }
+
+
+        function clearErrors(){
+
+            errors = document.getElementsByClassName('formerror');
+            for(let item of errors)
+            {
+                item.innerHTML = "";
+            }
+        
+            
+        }
+        function seterror(id, error){
+            //sets error inside tag of id 
+            element = document.getElementById(id);
+            element.getElementsByClassName('formerror')[0].innerHTML = error;
+        
+        }
+        
+        
+        function validateForm(){
+            debugger
+            var returnval = true;
+            clearErrors();
+        
+            //perform validation and if validation fails, set the value of returnval to false
+            var name = document.forms['myForm']["fname"].value;
+            if (name.length<5){
+                seterror("name", "*Length of name is too short");
+                returnval = false;
+            }
+        
+            if (name.length == 0){
+                seterror("name", "*Length of name cannot be zero!");
+                returnval = false;
+            }
+        
+            var email = document.forms['myForm']["femail"].value;
+            if (email.length>15){
+                seterror("email", "*Email length is too long");
+                returnval = false;
+            }
+        
+            var phone = document.forms['myForm']["fphone"].value;
+            if (phone.length != 10){
+                seterror("phone", "*Phone number should be of 10 digits!");
+                returnval = false;
+            }
+        
+            var password = document.forms['myForm']["fpass"].value;
+            if (password.length < 6){
+        
+                // Quiz: create a logic to allow only those passwords which contain atleast one letter, 
+                // one number and one special character and one uppercase letter
+                seterror("pass", "*Password should be atleast 6 characters long!");
+                returnval = false;
+            }
+        
+            var cpassword = document.forms['myForm']["fcpass"].value;
+            if (cpassword != password){
+                seterror("cpass", "*Password and Confirm password should match!");
+                returnval = false;
+            }
+        
+            return returnval;
+        }
+        </script>
+</body>
+</html>
